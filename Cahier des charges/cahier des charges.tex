@@ -5,6 +5,8 @@
 \documentclass[12pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[french]{babel}
+\usepackage{graphicx, subcaption, setspace, booktabs}
+
 \begin{document}
 
 \begin{titlepage}
@@ -17,14 +19,14 @@
 %	HEADING SECTIONS
 %----------------------------------------------------------------------------------------
 
-\textsc{\LARGE Projet Transcom}\\[1.5cm] % Name of your university/college
+\textsc{\LARGE Université de Bordeaux}\\[1.5cm] % Name of your university/college
 \textsc{\Large Cahier des charges}\\[0.5cm] % Major heading such as course name
 
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
 %----------------------------------------------------------------------------------------
 
-\HRule \\[0.4cm]
+\HRule \\[0.6cm]
 { \huge \bfseries Bacchanight}\\[0.4cm]
 \HRule \\[1.5cm]
 
@@ -32,11 +34,12 @@
 %	AUTHOR SECTION
 %----------------------------------------------------------------------------------------
 
-\Large \emph{Authors:}\\
+\Large \emph{Auteurs:}\\
 Geoffrey \textsc{Meilhan}\\
 Brian \textsc{Lebreton}\\
 Raphaël \textsc{Anquetil}\\
-Mohamed \textsc{Alami}\\[3cm]
+Mohamed \textsc{Alami}\\
+Vanessa \textsc{Ducan}\\[3cm]
 
 %----------------------------------------------------------------------------------------
 %	DATE SECTION
@@ -61,7 +64,7 @@ La Baccanight est une soirée organisée par le musée des beaux arts de Bordeau
 
 \section{Analyse de l'existant}
 
-Il n’existe pas de site actuel de la Bacchanight. La page annonçant l’évènement est celle du club-presse de bordeaux. Sous la forme d’un article, cela annonce la date, l’heure et l’adresse de la Bacchanight qui se situe au musée des Beaux-Arts. Un lien renvoie vers l’évènement Facebook créé à cet effet. En annexe, 2 captures d’écran décrivent ceci.
+Il n’existe pas de site actuel de la Bacchanight. La page annonçant l’évène\-ment est celle du club-presse de bordeaux. Sous la forme d’un article, cela annonce la date, l’heure et l’adresse de la Bacchanight qui se situe au musée des Beaux-Arts. Un lien renvoie vers l’évènement Facebook créé à cet effet. En annexe, 2 captures d’écran décrivent ceci.
 
 %----------------------------------------------------------------------------------------
 %	Besoins fonctionnels
@@ -69,7 +72,7 @@ Il n’existe pas de site actuel de la Bacchanight. La page annonçant l’évè
 
 \section{Besoins fonctionnels}
 
-L’esthétique du site doit respecter la charte graphique décrite plus bas. Nous devons permettre aux internautes d’accéder aux informations suivantes :
+L’esthétique du site doit respecter la charte graphique décrite plus bas. Nous devons permettre aux internautes d’accéder aux informations suivantes:
 \begin{itemize}
   \item Description de la soirée (par qui ? quoi ? pourquoi ?)
   \item Date et lieu
@@ -77,19 +80,17 @@ L’esthétique du site doit respecter la charte graphique décrite plus bas. No
   \item Historique des événements passés
 \end{itemize}
 
- Implémentation partage facebook? A discuter
-
 
 \subsection*{Entretien du site}
 
-Les différentes sections du site doivent être modifiable par une personne ne possédant aucune connaissance en HTML, CSS, PHP ou Drupal(a completer?). Le back end doit permettre de modifier le texte des différentes sections du site ou rajouter des images au caroussel. Le back end doit etre insensible à tout code et prendre du texte brut uniquement, pour éviter toute interférence avec le code HTML/CSS de la page. Dans le cas du planning de l'événement, on doit pouvoir rajouter ou supprimer une tranche horaire, et une description de l'activitée associée à celle-ci à l'aide d'un formulaire similaire aux Google Forms.
+Les différentes sections du site doivent être modifiable par une personne ne possédant aucune connaissance en HTML, CSS, PHP ou Drupal. Le back end doit permettre de modifier le texte des différentes sections du site ou rajouter des images au caroussel. Le back end doit etre insensible à tout code et prendre du texte brut uniquement, pour éviter toute interférence avec le code HTML/CSS de la page. Dans le cas du planning de l'événement, on doit pouvoir rajouter ou supprimer une tranche horaire, et une description de l'activitée associée à celle-ci à l'aide d'un formulaire similaire aux Google Forms. Si une implémentation de google map a lieu, l'adresse du lieu doit pouvoir être modifiée dans un champ prenant une adresse en paramètre.
 
 \subsection*{Contraintes techniques}
 
 Le site temporaire sera hebergé au cremi, jusqu'à la mise en place du site permanent.
-Le site pérenne doit être hébergé par le client qui lui même utilise Drupal comme CMS pour le site principal du musée des Beaux-arts de Bordeaux. Par conséq\-uent, le site sera lui aussi développé sous Drupal 7. La mise en page doit être dynamique, pour pouvoir être affichée sur plusieurs types de supports: smartphones, ordinateurs, (a completer). Le site doit se charger en 5 secondes au maximum avec une connexion standard d'un débit xxx(a completer). Si le chargement dépasse cette limite, implémenter un chargement asynchrone des différentes données (images, caroussel, timeline), avec une prioritée pour le texte et la mise en page. Le site aura été testé sur les versions des navigateurs suivantes : Google Chrome 54+, Safari 10.0+, Firefox 51.0+, Internet Explorer 11.0, Microsoft Edge 39.14986+. Les versions antérieures ou autres navigateurs sont susceptibles de ne pas afficher le contenu du site web correctement.
+Le site pérenne doit être hébergé par le client qui lui même utilise Drupal comme CMS pour le site principal du musée des Beaux-arts de Bordeaux. Par conséq\-uent, le site sera lui aussi développé sous Drupal 7. La mise en page doit être dynamique, pour pouvoir être affichée sur plusieurs types de supports: smartphones, ordinateurs. Le site doit se charger en 5 secondes au maximum avec une connexion standard d'un débit xxx(a completer). Si le chargement dépasse cette limite, implémenter un chargement asynchrone des différentes données (images, caroussel, timeline), avec une prioritée pour le texte et la mise en page. Le site aura été testé sur les versions des navigateurs suivantes : Google Chrome 54+, Safari 10.0+, Firefox 51.0+, Internet Explorer 11.0, Microsoft Edge 39.14986+. Les versions antérieures ou autres navigateurs sont susceptibles de ne pas afficher le contenu du site web correctement. Dans le cas de la mise en place d'une section "Contacts", un système de captcha sera mis en place pour éviter tout spam par des robots.
 
-\subsection*{Stockages des données}
+\subsection*{Timeline}
 
 Le texte des différentes champs des années précedentes, ainsi que les images doivent être sauvegardées afin de les restaurer lorsqu'on utlise la timeline. a completer.
 
@@ -103,7 +104,7 @@ Le texte des différentes champs des années précedentes, ainsi que les images 
 
 Le site doit respecter la charte graphique donnée par xxx(responsable Musée?), et est composée des éléments suivants:
 \begin{itemize}
-  \item Forme du site: One-page, un thème qui affiche tout les éléments du site sur une seule page. Système d'ancrage qui permet de faire défiler la page jusqu'a l'endroit lié au lien cliqué. Bannière centrale en haut de la page, avec un menu juste en dessous qui remplace la bannière quand on fait défiler la page.
+  \item Forme du site: One-page, un thème qui affiche tout les éléments du site sur une seule page. Système d'ancrage qui permet de faire défiler la page jusqu'a l'endroit lié au lien cliqué. Bannière centrale en haut de la page, avec un menu en dessous qui remplace la bannière quand on fait défiler la page.
   \item Couleurs: Rose : code hex, mauve: code hex, couleur police: code hex.
   \item Police: 1 police principal, plus 2 back up.
 \end{itemize}
@@ -127,10 +128,22 @@ Le site doit respecter la charte graphique donnée par xxx(responsable Musée?),
 
 \subsection*{Maquette}
 
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=\textwidth, height=\textheight, keepaspectratio=true]{maquette.png}}
+\end{center}
+
 %----------------------------------------------------------------------------------------
 %	Annexe
-%----------------------------------------------------------------------------------------*
+%----------------------------------------------------------------------------------------
 
 \section{Annexe}
+
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=\textwidth, height=\textheight, keepaspectratio=true]{annexe1.png}}
+\end{center}
+
+\begin{center}
+  \makebox[\textwidth]{\includegraphics[width=\textwidth, height=\textheight, keepaspectratio=true]{annexe2.png}}
+\end{center}
 
 \end{document}
