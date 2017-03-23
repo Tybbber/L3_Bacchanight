@@ -1,0 +1,6 @@
+name = Bacchanight
+description = Module dédié à la soirée Bacchanight organisée par le Musée des Beaux Arts de Bordeaux
+core = 7.x
+
+; NEW LINE
+configure = admin/config/content/bacchanight

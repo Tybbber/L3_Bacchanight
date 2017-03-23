@@ -1,0 +1,148 @@
+<?php
+
+
+function bacchanight_menu() {
+
+    $items = array();
+
+    $items['admin/config/content/bacchanight'] = array(
+      'title' => 'Bacchanight',
+      'description' => 'Configuration du module Bacchanight',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('bacchanight_form'),
+      'access arguments' => array('access administration pages'),
+      'type' => MENU_NORMAL_ITEM,
+    );
+
+    return $items;
+}
+
+
+/**
+ * Page callback: Bacchanight settings
+ *
+ * @see bacchanight_menu()
+ */
+function bacchanight_form($form, &$form_state) {
+
+    $form['titre'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Titre'),
+      '#default_value' => variable_get('titre', "Bacchatitre"),
+      '#size' => 50,
+      '#maxlength' => 100,
+      '#description' => t('Le titre de l\'évènement'),
+      '#required' => TRUE,
+    );
+
+    $form['mail'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Adresse mail'),
+      '#default_value' => variable_get('mail', "Bacchamail@baccha.mail"),
+      '#size' => 50,
+      '#maxlength' => 100,
+      '#description' => t('L\'adresse de contact de l\'évènement'),
+      '#required' => TRUE,
+    );
+
+    $form['numero_telephone'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Numéro de téléphone'),
+      '#default_value' => variable_get('numero_telephone', "+33 "),
+      '#size' => 50,
+      '#maxlength' => 100,
+      '#description' => t('Le numéro de téléphone de contact de l\'évènement'),
+      '#required' => TRUE,
+    );
+
+
+  $form['adresse'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Adresse'),
+    '#default_value' => variable_get('adresse', "Baccarue"),
+    '#size' => 50,
+    '#maxlength' => 100,
+    '#description' => t('Numéro et libellé de la rue'),
+    '#required' => TRUE,
+  );
+
+  $form['zipcode'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Code postal'),
+    '#default_value' => variable_get('zipcode', '00000'),
+    '#size' => 5,
+    '#maxlength' => 5,
+    '#description' => t('Le code postal'),
+    '#required' => TRUE,
+  );
+
+  $form['ville'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Ville'),
+    '#default_value' => variable_get('ville', 'Orthez'),
+    '#size' => 50,
+    '#maxlength' => 100,
+    '#description' => t('La ville'),
+    '#required' => TRUE,
+  );
+
+  $form['pays'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Pays'),
+    '#default_value' => variable_get('pays', 'France'),
+    '#size' => 50,
+    '#maxlength' => 100,
+    '#description' => t('Le pays'),
+    '#required' => TRUE,
+  );
+
+  $form['date'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Date de l\'évènement'),
+    '#default_value' => variable_get('date', 'MARDI 21 MARS 2017'),
+    '#size' => 50,
+    '#maxlength' => 100,
+    '#description' => t('La date de l\'évènement. Ex : MARDI 21 MARS 2017.'),
+    '#required' => TRUE,
+  );
+
+  $form['heure'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Heure de l\'évènement'),
+    '#default_value' => variable_get('heure', '20h - 00h'),
+    '#size' => 50,
+    '#maxlength' => 100,
+    '#description' => t('L\'heure de l\'évènement. Ex : 20h - 00h.'),
+    '#required' => TRUE,
+  );
+
+  $form = system_settings_form($form);
+  $form['#submit'][] = 'bacchanight_submit';
+
+  return $form;
+}
+
+function bacchanight_submit($form, $form_state) {
+
+ //NEW LINE
+ $adresse = variable_get('adresse', 3);
+ $date = variable_get('date', 3);
+
+ $file = fopen("sites/all/modules/bacchanight/config.php", "w");
+
+ $current_string = "<?php \n";
+
+ $current_string = $current_string."\$titre = \"".variable_get('titre', 3)."\";\n";
+ $current_string = $current_string."\$email = \"".variable_get('mail', 3)."\";\n";
+ $current_string = $current_string."\$phone = \"".variable_get('numero_telephone', 3)."\";\n";
+ $current_string = $current_string."\$street = \"".variable_get('adresse', 3)."\";\n";
+ $current_string = $current_string."\$zipcode = \"".variable_get('zipcode', 3)."\";\n";
+ $current_string = $current_string."\$pays = \"".variable_get('pays', 3)."\";\n";
+ $current_string = $current_string."\$date = \"".variable_get('date', 3)."\";\n";
+ $current_string = $current_string."\$heure = \"".variable_get('heure', 3)."\";\n";
+
+ fwrite($file, $current_string);
+
+ fclose($file);
+
+}
