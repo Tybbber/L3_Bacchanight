@@ -130,17 +130,18 @@ function bacchanight_submit($form, $form_state) {
 
  $file = fopen("sites/all/modules/bacchanight/config.php", "w");
 
- $current_string = "<?php \n";
+ $current_string = "<?php \n\n";
 
- $current_string = $current_string."\$titre = \"".variable_get('titre', 3)."\";\n";
- $current_string = $current_string."\$email = \"".variable_get('mail', 3)."\";\n";
- $current_string = $current_string."\$phone = \"".variable_get('numero_telephone', 3)."\";\n";
- $current_string = $current_string."\$street = \"".variable_get('adresse', 3)."\";\n";
- $current_string = $current_string."\$zipcode = \"".variable_get('zipcode', 3)."\";\n";
- $current_string = $current_string."\$pays = \"".variable_get('pays', 3)."\";\n";
- $current_string = $current_string."\$date = \"".variable_get('date', 3)."\";\n";
- $current_string = $current_string."\$heure = \"".variable_get('heure', 3)."\";\n";
+ $current_string .= "\$titre = \"".variable_get('titre', 3)."\";\n";
+ $current_string .= "\$email = \"".variable_get('mail', 3)."\";\n";
+ $current_string .= "\$phone = \"".variable_get('numero_telephone', 3)."\";\n";
+ $current_string .= "\$street = \"".variable_get('adresse', 3)."\";\n";
+ $current_string .= "\$zipcode = \"".variable_get('zipcode', 3)."\";\n";
+ $current_string .= "\$pays = \"".variable_get('pays', 3)."\";\n";
+ $current_string .= "\$date = \"".variable_get('date', 3)."\";\n";
+ $current_string .= "\$heure = \"".variable_get('heure', 3)."\";\n";
 
+ $current_string .= "\n?>";
  fwrite($file, $current_string);
 
  fclose($file);
