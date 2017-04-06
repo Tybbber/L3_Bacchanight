@@ -1,6 +1,5 @@
 <?php
 
-
 function bacchanight_menu() {
 
     $items = array();
@@ -116,11 +115,42 @@ function bacchanight_form($form, &$form_state) {
     '#required' => TRUE,
   );
 
+  $form['premiere_couleur'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Valeur de la couleur principale'),
+    '#default_value' => variable_get('premiere_couleur', '#000000'),
+    '#size' => 30,
+    '#maxlength' => 30,
+    '#description' => t('Code couleur : rgb, hexa ou code CSS'),
+    '#required' => TRUE,
+  );
+
+  $form['deuxieme_couleur'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Valeur de la couleur secondaire'),
+    '#default_value' => variable_get('deuxieme_couleur', '#000000'),
+    '#size' => 30,
+    '#maxlength' => 30,
+    '#description' => t('Code couleur : rgb, hexa ou code CSS'),
+    '#required' => TRUE,
+  );
+
+  $form['programme'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Programme de la soirée'),
+    '#default_value' => variable_get('programme', 'dorf'),
+    '#size' => 400,
+    '#maxlength' => 1000,
+    '#description' => t('titre | localisation | description'),
+    '#required' => TRUE,
+  );
+
   $form = system_settings_form($form);
   $form['#submit'][] = 'bacchanight_submit';
 
   return $form;
 }
+
 
 function bacchanight_submit($form, $form_state) {
 
@@ -140,6 +170,31 @@ function bacchanight_submit($form, $form_state) {
  $current_string .= "\$pays = \"".variable_get('pays', 3)."\";\n";
  $current_string .= "\$date = \"".variable_get('date', 3)."\";\n";
  $current_string .= "\$heure = \"".variable_get('heure', 3)."\";\n";
+ $current_string .= "\$color1 = \"".variable_get('premiere_couleur', 3)."\";\n";
+ $current_string .= "\$color2 = \"".variable_get('deuxieme_couleur', 3)."\";\n";
+
+ //Création du xml
+ $current_string .= "\$programme = <<<XML"."\n";
+ $current_string .= "<?xml version='1.0' standalone='yes'?>"."\n";
+ $current_string .= "<ListeProgramme>"."\n";
+ $current_string .= "<programme>"."\n";
+
+ $programme = variable_get('programme', 3);
+
+ $explodeEndLine = explode("\n", $programme);
+ $j=0;
+ for($i = 0; $i<sizeof($explodeEndLine); $i++){
+    $explodePipe = explode("|", $explodeEndLine[$i]);
+    $current_string .= "<event>"."\n";
+    $current_string .= "<location>".trim($explodePipe[$j], " ")."</location>"."\n";
+    $current_string .= "<titre>".trim($explodePipe[$j+1], " ")."</titre>"."\n";
+    $current_string .= "<description>".trim($explodePipe[$j+2], " ")."</description>"."\n";
+    $current_string .= "</event>"."\n";
+ }
+
+ $current_string .= "</programme>"."\n";
+ $current_string .= "</ListeProgramme>"."\n";
+ $current_string .= "XML;"."\n";
 
  $current_string .= "\n?>";
  fwrite($file, $current_string);

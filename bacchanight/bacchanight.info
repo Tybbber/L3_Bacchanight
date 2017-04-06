@@ -4,3 +4,5 @@ core = 7.x
 
 ; NEW LINE
 configure = admin/config/content/bacchanight
+
+scripts[] = js/form.js
