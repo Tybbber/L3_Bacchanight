@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Implements hook_block_info().
+ */
+function bacchanight_block_info() {
+  $blocks['current_posts'] = array(
+    // The name that will appear in the block list.
+    'info' => t('Bacchanight'),
+    // Default setting.
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  return $blocks;
+}
+
 function bacchanight_menu() {
 
     $items = array();
@@ -13,6 +26,13 @@ function bacchanight_menu() {
       'type' => MENU_NORMAL_ITEM,
     );
 
+    $items['bacchanight'] = array(
+      'title' => 'Bacchanight',
+      'description' => 'ffze',
+      'page callback' => 'param_manager',
+      'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+    );
     return $items;
 }
 
@@ -34,6 +54,7 @@ function bacchanight_form($form, &$form_state) {
       '#required' => TRUE,
     );
 
+
     $form['mail'] = array(
       '#type' => 'textfield',
       '#title' => t('Adresse mail'),
@@ -45,9 +66,7 @@ function bacchanight_form($form, &$form_state) {
     );
 
     $form['numero_telephone'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Numéro de téléphone'),
-      '#default_value' => variable_get('numero_telephone', "+33 "),
+      '#tyafault_value' => variable_get('numero_telephone', "+33 "),
       '#size' => 50,
       '#maxlength' => 100,
       '#description' => t('Le numéro de téléphone de contact de l\'évènement'),
@@ -123,7 +142,7 @@ function bacchanight_form($form, &$form_state) {
     '#maxlength' => 30,
     '#description' => t('Code couleur : rgb, hexa ou code CSS'),
     '#required' => TRUE,
-  );
+    );
 
   $form['deuxieme_couleur'] = array(
     '#type' => 'textfield',
@@ -137,11 +156,31 @@ function bacchanight_form($form, &$form_state) {
 
   $form['programme'] = array(
     '#type' => 'textarea',
-    '#title' => t('Programme de la soirée'),
+    '#title' => t('Programme fixe de la soirée'),
     '#default_value' => variable_get('programme', 'dorf'),
     '#size' => 400,
     '#maxlength' => 1000,
     '#description' => t('titre | localisation | description'),
+    '#required' => TRUE,
+  );
+
+  $form['continu'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Programme continu de la soirée'),
+    '#default_value' => variable_get('continu', 'dorf'),
+    '#size' => 400,
+    '#maxlength' => 1000,
+    '#description' => t('titre | localisation | description'),
+    '#required' => TRUE,
+  );
+
+  $form['captcha'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Clé captcha'),
+    '#default_value' => variable_get('captcha', 'David guetta'),
+    '#size' => 50,
+    '#maxlength' => 100,
+    '#description' => t('Rentrez une clé.'),
     '#required' => TRUE,
   );
 
@@ -151,54 +190,140 @@ function bacchanight_form($form, &$form_state) {
   return $form;
 }
 
-
 function bacchanight_submit($form, $form_state) {
 
- //NEW LINE
- $adresse = variable_get('adresse', 3);
- $date = variable_get('date', 3);
+    $file = fopen("sites/all/modules/bacchanight/templates/content/config.php", "w");
 
- $file = fopen("sites/all/modules/bacchanight/config.php", "w");
+    $current_string = "<?php \n\n";
 
- $current_string = "<?php \n\n";
 
- $current_string .= "\$titre = \"".variable_get('titre', 3)."\";\n";
- $current_string .= "\$email = \"".variable_get('mail', 3)."\";\n";
- $current_string .= "\$phone = \"".variable_get('numero_telephone', 3)."\";\n";
- $current_string .= "\$street = \"".variable_get('adresse', 3)."\";\n";
- $current_string .= "\$zipcode = \"".variable_get('zipcode', 3)."\";\n";
- $current_string .= "\$pays = \"".variable_get('pays', 3)."\";\n";
- $current_string .= "\$date = \"".variable_get('date', 3)."\";\n";
- $current_string .= "\$heure = \"".variable_get('heure', 3)."\";\n";
- $current_string .= "\$color1 = \"".variable_get('premiere_couleur', 3)."\";\n";
- $current_string .= "\$color2 = \"".variable_get('deuxieme_couleur', 3)."\";\n";
+     $current_string .= "\$titre = \"".variable_get('titre', 3)."\";\n";
+     $current_string .= "\$email = \"".variable_get('mail', 3)."\";\n";
+     $current_string .= "\$phone = \"".variable_get('numero_telephone', 3)."\";\n";
+     $current_string .= "\$street = \"".variable_get('adresse', 3)."\";\n";
+     $current_string .= "\$zipcode = \"".variable_get('zipcode', 3)."\";\n";
+     $current_string .= "\$city = \"".variable_get('ville', 3)."\";\n";
+     $current_string .= "\$country = \"".variable_get('pays', 3)."\";\n";
+     $current_string .= "\$date = \"".variable_get('date', 3)."\";\n";
+     $current_string .= "\$address = \""
+                        ."<p>\"."
+                        ."\$street."
+                        ."\"<br>\"."
+                        ."\$zipcode."
+                        ."\" \"."
+                        ."\$city."
+                        ."\", \"."
+                        ."\$country."
+                        ."\"</p>"
+                        ."\";\n";
+     $current_string .= "\$heure = \"".variable_get('heure', 3)."\";\n";
+     $current_string .= "\$color1 = \"".variable_get('premiere_couleur', 3)."\";\n";
+     $current_string .= "\$color2 = \"".variable_get('deuxieme_couleur', 3)."\";\n";
+     $current_string .= "\$captcha = \"".variable_get('captcha', 3)."\";\n";
 
- //Création du xml
- $current_string .= "\$programme = <<<XML"."\n";
- $current_string .= "<?xml version='1.0' standalone='yes'?>"."\n";
- $current_string .= "<ListeProgramme>"."\n";
- $current_string .= "<programme>"."\n";
+     //Création du xml
+     $current_string .= "\$programme = \""."<?xml version='1.0' standalone='yes'?>"."\n";
+     $current_string .= "<ListeProgramme>"."\n";
+     $current_string .= "<programme>"."\n";
 
- $programme = variable_get('programme', 3);
+     $programme = variable_get('programme', 3);
 
- $explodeEndLine = explode("\n", $programme);
- $j=0;
- for($i = 0; $i<sizeof($explodeEndLine); $i++){
-    $explodePipe = explode("|", $explodeEndLine[$i]);
-    $current_string .= "<event>"."\n";
-    $current_string .= "<location>".trim($explodePipe[$j], " ")."</location>"."\n";
-    $current_string .= "<titre>".trim($explodePipe[$j+1], " ")."</titre>"."\n";
-    $current_string .= "<description>".trim($explodePipe[$j+2], " ")."</description>"."\n";
-    $current_string .= "</event>"."\n";
- }
+     $explodeEndLine = explode("\n", $programme);
+     $j=0;
+     for($i = 0; $i<sizeof($explodeEndLine); $i++){
+        $explodePipe = explode("|", $explodeEndLine[$i]);
+        $current_string .= "<event>"."\n";
+        $current_string .= "<location>".trim($explodePipe[$j], " ")."</location>"."\n";
+        $current_string .= "<titre>".trim($explodePipe[$j+1], " ")."</titre>"."\n";
+        $current_string .= "<description>".rtrim(trim($explodePipe[$j+2], " "))."</description>"."\n";
+        $current_string .= "</event>"."\n";
+     }
 
- $current_string .= "</programme>"."\n";
- $current_string .= "</ListeProgramme>"."\n";
- $current_string .= "XML;"."\n";
+     $current_string .= "</programme>"."\n";
 
- $current_string .= "\n?>";
- fwrite($file, $current_string);
+     $current_string .= "<programme>"."\n";
 
- fclose($file);
+     $continu = variable_get('continu', 3);
 
+     $explodeEndLine = explode("\n", $continu);
+     $j=0;
+     for($i = 0; $i<sizeof($explodeEndLine); $i++){
+        $explodePipe = explode("|", $explodeEndLine[$i]);
+        $current_string .= "<event>"."\n";
+        $current_string .= "<location>".trim($explodePipe[$j], " ")."</location>"."\n";
+        $current_string .= "<titre>".trim($explodePipe[$j+1], " ")."</titre>"."\n";
+        $current_string .= "<description>".rtrim(trim($explodePipe[$j+2], " "))."</description>"."\n";
+        $current_string .= "</event>"."\n";
+     }
+
+     $current_string .= "</programme>"."\n";
+
+     $current_string .= "</ListeProgramme>"."\"".";"."\n";
+
+     $current_string .= "\n?>";
+
+     fwrite($file, $current_string);
+
+     fclose($file);
+
+}
+
+
+function machin(){
+    $tabvar = array(
+        'titre' => variable_get('titre', 3),
+        'email' => variable_get('mail', 3),
+        'phone' => variable_get('numero_telephone', 3),
+        'street' => variable_get('adresse', 3),
+        'zipcode' => variable_get('zipcode', 3),
+        'city' => variable_get('ville', 3),
+        'country' => variable_get('pays', 3),
+        'date' => variable_get('date', 3),
+        'heure' => variable_get('heure', 3),
+        'color1' => variable_get('premiere_couleur', 3),
+        'color2' => variable_get('deuxieme_couleur', 3),
+        'programme' => variable_get('programme', 3),
+        'continu' => variable_get('continu', 3),
+        'captcha' => variable_get('captcha')
+    );
+
+    return $tabvar;
+}
+
+function param_manager($event = NULL) {
+
+
+$tabvar = array(
+    'titre' => variable_get('titre', 3),
+    'email' => variable_get('mail', 3),
+    'phone' => variable_get('numero_telephone', 3),
+    'street' => variable_get('adresse', 3),
+    'zipcode' => variable_get('zipcode', 3),
+    'city' => variable_get('ville', 3),
+    'country' => variable_get('pays', 3),
+    'date' => variable_get('date', 3),
+    'heure' => variable_get('heure', 3),
+    'color1' => variable_get('premiere_couleur', 3),
+    'color2' => variable_get('deuxieme_couleur', 3),
+    'programme' => variable_get('programme', 3),
+    'continu' => variable_get('continu', 3),
+    'captcha' => variable_get('captcha')
+);
+
+  return theme('bacchanight',array('results' => $tabvar));
+}
+
+
+
+function bacchanight_theme() {
+    $t=machin();
+  return array(
+      'bacchanight' => array(
+        'template' => 'templates/html--bacchanight',
+        //manquel'argument pour que ce soit html et pas node
+      'variables' => array(
+        'results' => $t,
+      ),
+     ),
+  );
 }
